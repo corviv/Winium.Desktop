@@ -2,6 +2,9 @@
 {
     #region using
 
+    using System;
+
+    using Winium.Cruciatus;
     using Winium.StoreApps.Common;
 
     #endregion
@@ -12,7 +15,21 @@
 
         protected override string DoImpl()
         {
-            return this.JsonResponse(ResponseStatus.Success, null);
+            string type = this.ExecutedCommand.Parameters["type"].ToString();
+            var timeout = this.ExecutedCommand.Parameters["ms"];
+            //var timeout = int.Parse(ExecutedCommand.Parameters["ms"].ToString());
+
+            if (type == "implicit")
+            {
+                CruciatusFactory.Settings.SearchTimeout = Convert.ToInt32(timeout);
+            }
+            else
+            {
+                string msg = string.Format("Winium does not implement timeout type '{0}'.", type);
+                throw new NotImplementedException(msg);
+            }
+
+            return this.JsonResponse();
         }
 
         #endregion
